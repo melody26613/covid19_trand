@@ -1,6 +1,6 @@
 ### trend of COVID-19 
 1. fetch data from WHO
-2. use linear regression to get globally trend of COVID-19
+2. use polynomial regression to get globally trend of COVID-19
 3. can compare with SARS
 4. running environment is Google Colab
 
