@@ -6,6 +6,6 @@
 
 update time: 2020/03/02
 
-![image](https://github.com/melody26613/covid19_trend/blob/master/predict/pic/covid19-20200302.gif)
+![image](https://github.com/melody26613/covid19_trend/blob/master/predict/pic/gif/covid19-20200311.gif)
 
 ![image](https://github.com/melody26613/covid19_trend/blob/master/predict/pic/sars.jpg)
