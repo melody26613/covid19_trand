@@ -4,8 +4,8 @@
 3. can compare with SARS
 4. running environment is Google Colab
 
-update time: 2020/05/11
+update time: 2020/05/18
 
-![image](https://github.com/melody26613/covid19_trend/blob/master/predict/pic/gif/covid19-20200511.gif)
+![image](https://github.com/melody26613/covid19_trend/blob/master/predict/pic/gif/covid19-20200518.gif)
 
 ![image](https://github.com/melody26613/covid19_trend/blob/master/predict/pic/sars.jpg)
