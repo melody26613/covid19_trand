@@ -15,8 +15,8 @@ $ _one_day_fetch.sh
 $ crontab -e
   0 11 * * * <path of fetch script>_one_day_fetch.sh
 
-update time: 2020/05/18
+update time: 2020/06/01
 
-![image](https://github.com/melody26613/covid19_trend/blob/master/predict/pic/gif/covid19-20200518.gif)
+![image](https://github.com/melody26613/covid19_trend/blob/master/pic/gif/covid19-20200601.gif)
 
-![image](https://github.com/melody26613/covid19_trend/blob/master/predict/pic/sars.jpg)
+![image](https://github.com/melody26613/covid19_trend/blob/master/pic/sars.jpg)
