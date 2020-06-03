@@ -1,5 +1,5 @@
-import pandas as pd
 # ref: https://kknews.cc/zh-tw/code/zejejqp.html
+import pandas as pd
 import operator
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,13 +7,20 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import PolynomialFeatures
 from datetime import datetime
-
 from PIL import Image
+
+from handle_path import handle_csv_path
+from handle_path import current_path
 
 PREDICT_AND_CHECK_ACCURACY = 1
 PREDICT_NEXT_FEW_DAYS = 20
-CSV_PATH = "/home/melody/covid19/covid19.csv"
 
+CSV_PATH = "covid19.csv"
+PIC_PATH = "pic/"
+
+def handle_input_csv_path():
+    CSV_PATH = os.path.dirname(os.path.abspath(__file__)) + "/" + CSV_NAME
+    print("output csv to " + CSV_PATH + " later")
 
 def get_x_y_info(train_data_df):
     x = pd.DataFrame({
@@ -55,11 +62,13 @@ def show_plot(x_train, y_train, x_predict, y_predict, title):
     plt.ylabel("total")
     
     date_today = datetime.today().strftime('%Y%m%d')
-    picture_basic_name = "covid19-" + date_today
+    picture_basic_name = current_path() + "/" + PIC_PATH + "covid19-" + date_today
     # plt.show()
     plt.savefig(picture_basic_name + ".png")  
     Image.open(picture_basic_name + ".png").convert("RGB").save(picture_basic_name + ".jpg", 'JPEG')
 
+CSV_PATH = handle_csv_path()
+print("input csv from " + CSV_PATH)
     
 train_df_covid19 = pd.read_csv(
     CSV_PATH,

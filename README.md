@@ -1,19 +1,17 @@
 ### trend of COVID-19 
-##### environment: Ubuntu 16.04 + python3.6
+#### environment: Ubuntu 16.04 + python3.6
 
 1. fetch data from WHO
 2. use polynomial regression to get globally trend of COVID-19
 3. can compare with SARS
 
-##### check environment before execute relative python script
-$ 0_check_environment.sh
-
-##### fetch WHO data
+#### fetch WHO data
 $ _one_day_fetch.sh
 
-##### automatically fetch WHO data by crontab, fetch data at 11:00 a.m. everyday
+#### automatically fetch WHO data by crontab, fetch data at 11:00 a.m. everyday
 $ crontab -e
-  0 11 * * * <path of fetch script>_one_day_fetch.sh
+
+    0 11 * * * <path of fetch script>_one_day_fetch.sh
 
 update time: 2020/06/01
 

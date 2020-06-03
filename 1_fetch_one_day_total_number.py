@@ -19,11 +19,13 @@ from pdfminer.pdfpage import PDFTextExtractionNotAllowed
 import re
 import csv
 import threading
+
+from handle_path import handle_csv_path
 from spinner import SpinnerThread
 
+CSV_PATH = "covid19.csv"
 FETCH_INDEX = 0
 QUOTE_PAGE = "https://www.who.int/emergencies/diseases/novel-coronavirus-2019/situation-reports"
-CSV_PATH = "/home/melody/covid19/covid19.csv"
 
 
 def remove_redundant_in_list(input_list):
@@ -122,6 +124,9 @@ def append_total_number_to_csv(date, total):
         print(data)
         writer = csv.writer(csv_file)
         writer.writerow(data)
+
+CSV_PATH = handle_csv_path()
+print("output csv to " + CSV_PATH + " later")
 
 spinner_thread = SpinnerThread()
 spinner_thread.start()

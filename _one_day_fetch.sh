@@ -1,13 +1,20 @@
 #!/bin/bash
 
-# crontab -e
-# 0 11 * * * /home/melody/covid19/_one_day_fetch.sh
+CURRENT_DIR=$(dirname $0)
+ENVIRONMENT_OK=$CURRENT_DIR/check_environment_ok.tmp
+CHECK_ENVINONMENT=$CURRENT_DIR/0_check_environment.sh
 
-COVID19_PATH=/home/melody/covid19
+if [ ! -f $ENVIRONMENT_OK ]; then
+    $CHECK_ENVINONMENT
+    exit_stat=$?
+    if [ $exit_stat -ne 0 ]; then
+        exit 1
+    fi
+fi
 
-source $COVID19_PATH/venv/bin/activate
-python3 $COVID19_PATH/1_fetch_one_day_total_number.py
-python3 $COVID19_PATH/2_output_trend_picture.py
+source $CURRENT_DIR/venv/bin/activate
+python3 $CURRENT_DIR/1_fetch_one_day_total_number.py
+python3 $CURRENT_DIR/2_output_trend_picture.py
 deactivate
 
 rm -f *.pdf
