@@ -17,5 +17,6 @@ python3 $CURRENT_DIR/1_fetch_one_day_total_number.py
 python3 $CURRENT_DIR/2_output_trend_picture.py
 deactivate
 
-rm -f *.pdf
-rm -f *.png
+rm -f $CURRENT_DIR/*.pdf
+rm -f $CURRENT_DIR/*.png
+rm -f $CURRENT_DIR/pic/*.png
