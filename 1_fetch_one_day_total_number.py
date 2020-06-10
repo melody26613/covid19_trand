@@ -4,9 +4,13 @@
 # ref: https://www.cnblogs.com/wj-1314/p/9429816.html
 # SARS data: https://www.who.int/csr/sars/country/en/
 
+import re
+import csv
+import threading
+import numpy as np
+import pandas as pd
 import urllib.request as urllib2
 from bs4 import BeautifulSoup
-
 from pdfminer.pdfparser import  PDFParser
 from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfpage import PDFPage
@@ -16,10 +20,6 @@ from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LTTextBoxHorizontal,LAParams
 from pdfminer.pdfpage import PDFTextExtractionNotAllowed
 
-import re
-import csv
-import threading
-
 from handle_path import handle_csv_path
 from spinner import SpinnerThread
 
@@ -28,50 +28,44 @@ FETCH_INDEX = 0
 QUOTE_PAGE = "https://www.who.int/emergencies/diseases/novel-coronavirus-2019/situation-reports"
 
 
-def remove_redundant_in_list(input_list):
-    return list( dict.fromkeys(input_list) )
-
-
-def get_pdf_links():
+def get_pdf_links_filenames_dates():
     page = urllib2.urlopen(QUOTE_PAGE)
     soup = BeautifulSoup(page, 'html.parser')
     
     links_tag = soup.find_all('div', {'class': 'sf-content-block content-block'})[10].find_all('a')
     
-    links = list()
+    all_links_filenames_dates = list()
     for raw_link in links_tag:
-        links.append("https://www.who.int" + raw_link.get('href'))
+        link = "https://www.who.int" + raw_link.get('href')
+        filename = get_pdf_filename_from_link(link)
+        date = get_date_from_filename(filename)
+        all_links_filenames_dates.append([link, filename, date])
     
-    links = remove_redundant_in_list(links)
-    links.sort(reverse = True)
+    all_links_filenames_dates = np.unique(all_links_filenames_dates, axis=0)
+    all_links_filenames_dates = sorted(all_links_filenames_dates, key=lambda l:l[2], reverse=True)
     
-    for i in range(0, len(links)):
-        print(str(i) + " " + links[i])
-    
-    return links
+    all_datas_pd = pd.DataFrame(all_links_filenames_dates, columns = ['links', 'filenames', 'dates'])
+    print(all_datas_pd)
+    return all_datas_pd
 
-
-def get_pdf_filenames_from_links(links):
-    filenames = list()
-    for link in links:
-        try:
-            filenames.append("2020" + link.split("2020")[1].split('?')[0])
-        except Exception as ex:
-            print("link format is not right: " + link)
+def get_pdf_filename_from_link(link):
+    try:
+        filename = "2020" + link.split("2020")[1].split('?')[0]
+    except Exception as ex:
+        print("link format is not right: " + link)
+        filename = ""
     
-    return filenames
+    return filename
 
-
-def get_dates_from_filenames(filenames):
-    dates = list()
-    for filename in filenames:
-        date = filename[0:8]
-        year = date[:4]
-        month = date[4:6]
-        day = date[6:]
-        dates.append(year + "/" + month + "/" + day)
+def get_date_from_filename(filename):
+    date = filename[0:8]
+    year = date[:4]
+    month = date[4:6]
+    day = date[6:]
     
-    return dates
+    date_str = year + "/" + month + "/" + day
+    return date_str
+
 
 def download_pdf(link, filename):
     filedata = urllib2.urlopen(link)
@@ -131,15 +125,15 @@ print("output csv to " + CSV_PATH + " later")
 spinner_thread = SpinnerThread()
 spinner_thread.start()
 
-links = get_pdf_links()
-filenames = get_pdf_filenames_from_links(links)
-dates = get_dates_from_filenames(filenames)
-
-download_pdf(links[FETCH_INDEX], filenames[FETCH_INDEX])
-print("fetch total number of patient from PDF " + filenames[FETCH_INDEX])
-total = get_total(filenames[FETCH_INDEX])
+all_datas_pd = get_pdf_links_filenames_dates()
+download_link = all_datas_pd['links'][FETCH_INDEX]
+download_filename = all_datas_pd['filenames'][FETCH_INDEX]
+download_date = all_datas_pd['dates'][FETCH_INDEX]
+download_pdf(download_link, download_filename)
+print("fetch total number of patient from PDF " + download_filename)
+total = get_total(download_filename)
 print("total: ", total)
 
-append_total_number_to_csv(dates[FETCH_INDEX], total)
+append_total_number_to_csv(download_date, total)
 
 spinner_thread.join()
