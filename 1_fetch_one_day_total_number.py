@@ -20,9 +20,11 @@ from pdfminer.converter import PDFPageAggregator
 from pdfminer.layout import LTTextBoxHorizontal,LAParams
 from pdfminer.pdfpage import PDFTextExtractionNotAllowed
 
+from handle_path import current_path
 from handle_path import handle_csv_path
 from spinner import SpinnerThread
 
+CURRENT_PATH = ""
 CSV_PATH = "covid19.csv"
 FETCH_INDEX = 0
 QUOTE_PAGE = "https://www.who.int/emergencies/diseases/novel-coronavirus-2019/situation-reports"
@@ -112,13 +114,14 @@ def get_total(filename):
     
     return temp_total
 
-def append_total_number_to_csv(date, total):
-    with open(CSV_PATH, 'a') as csv_file:
+def append_total_number_to_csv(date, total, csv_path):
+    with open(csv_path, 'a') as csv_file:
         data = [ date,  total ]
         print(data)
         writer = csv.writer(csv_file)
         writer.writerow(data)
 
+CURRENT_PATH = current_path()
 CSV_PATH = handle_csv_path()
 print("output csv to " + CSV_PATH + " later")
 
@@ -127,13 +130,13 @@ spinner_thread.start()
 
 all_datas_pd = get_pdf_links_filenames_dates()
 download_link = all_datas_pd['links'][FETCH_INDEX]
-download_filename = all_datas_pd['filenames'][FETCH_INDEX]
+download_filename = CURRENT_PATH + "/" + all_datas_pd['filenames'][FETCH_INDEX]
 download_date = all_datas_pd['dates'][FETCH_INDEX]
 download_pdf(download_link, download_filename)
 print("fetch total number of patient from PDF " + download_filename)
 total = get_total(download_filename)
 print("total: ", total)
 
-append_total_number_to_csv(download_date, total)
+append_total_number_to_csv(download_date, total, CSV_PATH)
 
 spinner_thread.join()
